@@ -1,0 +1,101 @@
+package mychartproxy.dhroxy.mapper
+
+import mychartproxy.dhroxy.model.HomeMeasurementDocument
+import mychartproxy.dhroxy.model.HomeMeasurementsResponse
+import org.hl7.fhir.r4.model.Bundle
+import org.hl7.fhir.r4.model.CodeableConcept
+import org.hl7.fhir.r4.model.CodeType
+import org.hl7.fhir.r4.model.Coding
+import org.hl7.fhir.r4.model.DateTimeType
+import org.hl7.fhir.r4.model.Identifier
+import org.hl7.fhir.r4.model.Observation
+import org.hl7.fhir.r4.model.Quantity
+import org.hl7.fhir.r4.model.Reference
+import org.hl7.fhir.r4.model.StringType
+import org.springframework.stereotype.Component
+import java.time.OffsetDateTime
+import java.util.Date
+import java.util.UUID
+
+@Component
+class HomeMeasurementMapper {
+
+    fun toBundle(response: HomeMeasurementsResponse?, requestUrl: String): Bundle {
+        val bundle = Bundle().apply {
+            type = Bundle.BundleType.SEARCHSET
+            link = listOf(Bundle.BundleLinkComponent().apply {
+                relation = "self"
+                url = requestUrl
+            })
+        }
+
+        response?.documents.orEmpty().forEach { doc ->
+            mapObservation(doc)?.let {
+                bundle.addEntry(Bundle.BundleEntryComponent().apply {
+                    fullUrl = "urn:uuid:${UUID.randomUUID()}"
+                    resource = it
+                })
+            }
+        }
+
+        bundle.total = bundle.entry.size
+        return bundle
+    }
+
+    private fun mapObservation(doc: HomeMeasurementDocument): Observation? {
+        val obs = Observation()
+        val idSource = listOfNotNull(doc.date, doc.type ?: doc.name).joinToString("-")
+            .ifBlank { UUID.randomUUID().toString() }
+        obs.id = "hm-${safeId(idSource)}"
+
+        obs.status = Observation.ObservationStatus.FINAL
+
+        obs.addCategory(CodeableConcept().apply {
+            addCoding(Coding()
+                .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+                .setCode("vital-signs")
+                .setDisplay("Vital Signs"))
+        })
+
+        val displayName = doc.type?.takeIf { it.isNotBlank() }
+            ?: doc.name?.takeIf { it.isNotBlank() }
+        obs.code = CodeableConcept().apply {
+            if (displayName != null) {
+                text = displayName
+            } else {
+                addExtension("http://hl7.org/fhir/StructureDefinition/data-absent-reason", CodeType("unknown"))
+            }
+        }
+
+        doc.date?.let {
+            try {
+                obs.effective = DateTimeType(Date.from(OffsetDateTime.parse(it).toInstant()))
+            } catch (_: Exception) {
+                obs.effective = DateTimeType(it)
+            }
+        }
+
+        if (doc.value != null) {
+            val bigDecimalValue = doc.value.toBigDecimalOrNull()
+            if (bigDecimalValue != null && !doc.unit.isNullOrBlank()) {
+                obs.value = DanishFhir.quantity(bigDecimalValue, doc.unit)
+            } else {
+                obs.value = StringType(listOfNotNull(doc.value, doc.unit).joinToString(" "))
+            }
+        }
+
+        doc.source?.let {
+            obs.addNote(org.hl7.fhir.r4.model.Annotation().apply { text = "Source: $it" })
+        }
+
+        obs.subject = DanishFhir.patientReference()
+
+        return obs
+    }
+
+    private fun safeId(raw: String): String =
+        raw.lowercase()
+            .replace("[^a-z0-9]+".toRegex(), "-")
+            .trim('-')
+            .take(64)
+}

@@ -1,0 +1,145 @@
+{
+  "/ProxySwitch": {
+    "AvailableLanguageList": [{"DisplayText": "Dansk", "IsSelected": true, "Name": "da-DK"}],
+    "ProxySubjectList": [
+      {"Id": "WP-24abc==", "DisplayName": "Testperson Eksempel", "IsSelf": true, "IsSelected": true, "Disabled": false, "TabColor": 0},
+      {"Id": "WP-99xyz==", "DisplayName": "Barn Eksempel", "IsSelf": false, "IsSelected": false, "Disabled": false, "TabColor": 1}
+    ],
+    "ShowPersonalInformation": true
+  },
+  "/api/conversations/GetOrganizations": {
+    "organizations": {
+      "1": {"organizationId": "1", "organizationName": "Region Sjælland", "address": ["Fælledvej 11", "4200 Slagelse"], "isLocal": true}
+    }
+  },
+  "/api/test-results/GetList": {
+    "areResultsFullyLoaded": true,
+    "groupBy": "Encounter",
+    "newResultGroups": [
+      {"key": "enc-100", "organizationID": "1", "isInpatient": false, "formattedDate": "15-06-2026", "sortDate": "RECENT", "resultList": ["ord-1", "ord-2", "ord-3"]},
+      {"key": "adm-200", "organizationID": "1", "isInpatient": true, "formattedDate": "02-05-2026", "sortDate": "RECENT", "resultList": ["ord-9"]}
+    ],
+    "newResults": {
+      "ord-1": {"key": "ord-1", "name": "Hæmoglobin;B", "isAbnormal": false, "orderMetadata": {"prioritizedInstantISO": "RECENT_T", "resultType": "Lab", "orderProviderName": "Test Læge"}},
+      "ord-2": {"key": "ord-2", "name": "Urin-dyrkning", "isAbnormal": false, "orderMetadata": {"prioritizedInstantISO": "RECENT_T", "resultType": "Mikrobiologi"}},
+      "ord-3": {"key": "ord-3", "name": "Røntgen af thorax", "isAbnormal": false, "orderMetadata": {"prioritizedInstantISO": "RECENT_T", "resultType": "Billeddiagnostik"}},
+      "ord-9": {"key": "ord-9", "name": "Natrium;P", "isAbnormal": true, "orderMetadata": {"prioritizedInstantISO": "RECENT_T", "resultType": "Lab"}}
+    }
+  },
+  "/api/test-results/GetDetailsByCSN": {
+    "contactType": "Ambulant",
+    "key": "enc-100",
+    "results": [
+      {
+        "key": "ord-1", "name": "Hæmoglobin;B", "isAbnormal": false,
+        "orderMetadata": {"prioritizedInstantISO": "RECENT_T", "latestUpdateInstantISO": "RECENT_T", "resultStatus": "Endelig", "resultType": "Lab", "authorizingProviderName": "Test Læge", "resultingLab": {"name": "Klinisk Biokemisk Afdeling, Testhospital"}, "specimensDisplay": "Blod"},
+        "resultComponents": [
+          {"componentInfo": {"componentID": "1001", "name": "Hæmoglobin;B", "commonName": "Hgb", "units": "mmol/L"},
+           "componentResultInfo": {"value": "8,4", "numericValue": 8.4, "abnormalFlagCategoryValue": "", "referenceRange": {"formattedReferenceRange": "7,3 - 9,5 mmol/L", "displayLow": "7,3", "displayHigh": "9,5"}},
+           "componentComments": {"hasContent": false}},
+          {"componentInfo": {"componentID": "1002", "name": "Leukocytter;B", "units": "10^9/L"},
+           "componentResultInfo": {"value": "6.1", "numericValue": 6.1, "referenceRange": {"formattedReferenceRange": "3,5 - 8,8"}}}
+        ]
+      },
+      {
+        "key": "ord-2", "name": "Urin-dyrkning",
+        "orderMetadata": {"prioritizedInstantISO": "RECENT_T", "resultStatus": "Foreløbig", "resultType": "Mikrobiologi", "resultingLab": {"name": "Klinisk Mikrobiologi"}},
+        "resultComponents": [
+          {"componentInfo": {"componentID": "2001", "name": "Dyrkning"}, "componentResultInfo": {"value": "Ingen vækst", "numericValue": 0}}
+        ]
+      },
+      {
+        "key": "ord-3", "name": "Røntgen af thorax",
+        "orderMetadata": {"prioritizedInstantISO": "RECENT_T", "resultStatus": "Endelig", "resultType": "Billeddiagnostik", "readingProviderName": "Radiolog Test", "authorizingProviderName": "Test Læge", "resultingLab": {"name": "Røntgenafdelingen"}},
+        "resultComponents": [],
+        "imageStudies": [],
+        "studyResult": {"hasStudyContent": true,
+          "impression": {"hasContent": true, "contentAsString": "Ingen tegn på infiltrater."},
+          "narrative": {"hasContent": true, "contentAsString": "Lunger udfoldede. Normal hjertestørrelse."}}
+      }
+    ]
+  },
+  "/api/test-results/GetInpatientDetailsByCSN": {
+    "key": "adm-200",
+    "results": [
+      {"key": "ord-9", "name": "Natrium;P", "isAbnormal": true,
+       "orderMetadata": {"prioritizedInstantISO": "RECENT_T", "resultStatus": "Final", "resultType": "Lab", "resultingLab": {"name": "KBA"}},
+       "resultComponents": [
+         {"componentInfo": {"componentID": "3001", "name": "Natrium;P", "units": "mmol/L"},
+          "componentResultInfo": {"value": "132", "numericValue": 132, "referenceRange": {"formattedReferenceRange": "137 - 145"}}}
+       ]}
+    ]
+  },
+  "/api/track-my-health/GetFlowsheets": {
+    "flowsheets": [
+      {"episodeId": "ep-1", "name": "Hjemmemålinger", "readings": [],
+       "rows": [
+         {"id": "r-weight", "name": "Vægt", "unitsDisplayName": "kg"},
+         {"id": "r-sys", "name": "Systolisk blodtryk", "unitsDisplayName": "mmHg"}
+       ]}
+    ]
+  },
+  "/api/track-my-health/GetFlowsheetReadings": {
+    "flowsheet": {"episodeId": "ep-1", "name": "Hjemmemålinger",
+      "rows": [
+        {"id": "r-weight", "name": "Vægt", "unitsDisplayName": "kg"},
+        {"id": "r-sys", "name": "Systolisk blodtryk", "unitsDisplayName": "mmHg"}
+      ],
+      "readings": [
+        {"id": "rd-1", "rowId": "r-weight", "instantTakenIso": "2026-06-14T07:30:00Z", "numericValue": 71.5},
+        {"id": "rd-2", "rowId": "r-sys", "instantTakenIso": "2026-06-14T07:31:00Z", "numericValue": 128}
+      ]}
+  },
+  "/api/HealthIssues/LoadHealthIssuesData": {
+    "dataList": [
+      {"hasLocalInstance": true,
+       "localItem": {"id": "hi-1", "name": "Astma", "formattedDateNoted": "03-02-2021", "organization": {"organizationId": "1", "organizationName": "Region Sjælland"}},
+       "healthIssueItem": {"id": "hi-1", "name": "Astma", "formattedDateNoted": "03-02-2021"}},
+      {"healthIssueItem": {"id": "hi-2", "name": "Forhøjet blodtryk", "formattedDateNoted": "12. okt. 2024"}}
+    ]
+  },
+  "/api/health-summary/FetchH2GHeader": {
+    "pastVisitsList": [
+      {"csn": "enc-100", "id": "v-100", "instant": "2026-06-15T08:00:00Z", "visitTypeName": "Ambulant kontrol",
+       "organization": {"organizationId": "1", "organizationName": "Region Sjælland"},
+       "primaryDepartment": {"id": "dep-7", "name": "Medicinsk Ambulatorium, Nykøbing F. Sygehus", "address": ["Fjordvej 15", "4800 Nykøbing F"], "phoneNumber": "56 51 40 00", "specialty": {"title": "Intern medicin"}},
+       "primaryProviderName": "Test Læge"},
+      {"csn": "enc-101", "id": "v-101", "instant": "2026-03-01T09:00:00Z", "visitTypeName": "Telefonkonsultation", "isCanceled": true,
+       "organization": {"organizationId": "1", "organizationName": "Region Sjælland"}}
+    ],
+    "upcomingVisitsList": [
+      {"csn": "enc-300", "id": "v-300", "instant": "2026-11-20T09:30:00Z", "durationInMinutes": 30, "visitTypeName": "Opfølgning",
+       "organization": {"organizationId": "1", "organizationName": "Region Sjælland"},
+       "primaryDepartment": {"id": "dep-7", "name": "Medicinsk Ambulatorium, Nykøbing F. Sygehus", "address": ["Fjordvej 15", "4800 Nykøbing F"]}}
+    ]
+  },
+  "/api/visits/past-details/GetVisitDetailsPast": {
+    "csn": "enc-100", "isEncounterSensitive": false,
+    "notesInfo": {"isAtLeastOneNoteShareable": true, "notesReport": {"reportContext": "CSN|enc-100", "reportID": "MYC_NOTES", "reportMnemonic": "MYCHART_NOTES"}},
+    "visitSummaryInfo": {"department": "Medicinsk Ambulatorium", "visitType": "Ambulant kontrol"}
+  },
+  "/api/visit-notes/GetVisitNotes": {
+    "noteList": [
+      {"displayName": "Ambulatorienotat", "hnoID": "hno-1", "iso": "2026-06-15T08:40:00Z", "isNoteSensitive": false, "provider": {"name": "Test Læge"}}
+    ]
+  },
+  "/api/report-content/LoadReportContent": {
+    "reportContent": "<div><h2>Ambulatorienotat</h2><p>Syntetisk notat. Patienten har det godt.</p></div>",
+    "reportCss": ""
+  },
+  "/api/referrals/listReferrals": {
+    "canSendMessage": false,
+    "referralList": [
+      {"internalId": "rfl-1", "externalId": "5001", "creationDate": "01-06-2026", "start": "01-06-2026", "end": "01-12-2026",
+       "referredByProviderName": "Lægehuset Test", "referredToFacility": "Nykøbing F. Sygehus", "referredToProviderName": "Medicinsk Ambulatorium", "status": "1", "statusString": "Godkendt"},
+      {"internalId": "rfl-2", "externalId": "5002", "creationDate": "01-01-2025", "start": "01-01-2025", "end": "01-07-2025",
+       "referredByProviderName": "Lægehuset Test", "referredToFacility": "Holbæk Sygehus", "status": "3", "statusString": "Afsluttet"}
+    ]
+  },
+  "/api/referrals/getReferralDetails": {
+    "internalId": "rfl-1",
+    "nativeReport": {"type": "Udredning",
+      "referredBy": {"provider": {"name": "Lægehuset Test"}, "placeOfService": {"facility": "Lægehuset Test"}},
+      "referredTo": {"provider": {"name": "Medicinsk Ambulatorium", "primarySpecialty": "Intern medicin"}, "placeOfService": {"facility": "Nykøbing F. Sygehus", "departmentSpecialty": "Intern medicin"}}}
+  }
+}

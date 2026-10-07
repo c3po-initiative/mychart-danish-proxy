@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+# Sundhedsplatformen (Epic MyChart, MinSundhedsplatform) served as FHIR R4 on /fhir.
+# Every request must carry the MyChart session: Cookie and __RequestVerificationToken.
+mychart:
+  client:
+    fhir-path: "/fhir"
+    base-url: "https://www.minsundhedsplatform.dk"
+    instance-path: "/MyChartPPR1"
+    max-detail-calls: 40
+    test-results-group-type: "0"
+    rewrite-namespaces: true
+    # forwarded-headers: # defaults to "cookie","__requestverificationtoken","user-agent","accept-language","referer"
+    fallback-headers:
+      user-agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+
+logging:
+  level:
+    mychartproxy: INFO
